@@ -5,7 +5,7 @@ To install the simulator itself, you only need to go to the following link:
 > https://www.coppeliarobotics.com/downloads
 
 There, download the Edu version.
-Once you have downloaded the installer, just click over it and follow the Wizard, it is recommended to just follow the default settings of the wizard and just click on yes.
+Once you have downloaded the installer, just click over it and follow the Wizard, it is recommended to just follow the default settings of the wizard and just click on yes. i
 
 ### Python Library
 In order for the Python library to work properly, it needs some previous requirements.
