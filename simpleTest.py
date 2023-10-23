@@ -17,6 +17,8 @@ sim.setInt32Param(sim.intparam_idle_fps, 0)
 client.setStepping(True)
 sim.startSimulation()
 
+x= 0
+
 # Create shape
 capsuleHandle = sim.createPrimitiveShape(sim.primitiveshape_capsule,[0.2, 0.3, 1], 0)
 client.step()  # triggers next simulation step
