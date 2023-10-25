@@ -1,11 +1,5 @@
 from coppeliasim_zmqremoteapi_client import RemoteAPIClient
-
-client = RemoteAPIClient()
-sim = client.getObject('sim')
-
-# Makes sure that the idle loop runs at full speed for this program:
-defaultIdleFps = sim.getInt32Param(sim.intparam_idle_fps)
-sim.setInt32Param(sim.intparam_idle_fps, 0)
+import time
 
 '''
 @dev: This function gets the x, y, and z lenghts of the bounding box of a given object
@@ -32,10 +26,30 @@ def getObjectBoundingBoxSize(handle):
     # Returns all the values
     return x, y, z
 
-dummyHandle = sim.getObject("/Dummy", None)
+# Access to  the CoppeliaSim client
+client = RemoteAPIClient()
+sim = client.getObject('sim')
+
+# Makes sure that the idle loop runs at full speed for this program:
+defaultIdleFps = sim.getInt32Param(sim.intparam_idle_fps)
+sim.setInt32Param(sim.intparam_idle_fps, 0)
+
+# Run a simulation in stepping mode:
+client.setStepping(True)
+sim.startSimulation()
+
+# Get all of the elements of the scene.
+scene_objects = sim.getObjectsInTree(sim.handle_scene, sim.handle_all, 0)
 client.step()  # triggers next simulation step
 
-x, y, z = getObjectBoundingBoxSize(dummyHandle)
+# Create group of objects
+groupHandle = sim.groupShapes(scene_objects, False)
+client.step()  # triggers next simulation step
+
+x, y, z = getObjectBoundingBoxSize(groupHandle)
+
+sim.ungroupShape(groupHandle)
+client.step()  # triggers next simulation step
 
 boxHandle = sim.createPrimitiveShape(sim.primitiveshape_cuboid,[x, y, z], 0)
 client.step()  # triggers next simulation step
@@ -46,3 +60,21 @@ client.step()  # triggers next simulation step
 
 # Transparency
 sim.setShapeColor(boxHandle, None, sim.colorcomponent_transparency, [0.5])
+client.step()  # triggers next simulation step
+
+# Position
+sim.setObjectPosition(boxHandle, sim.handle_parent, [0.255, 0.225, 0.225])
+client.step()  # triggers next simulation step
+
+# Sleep to appreciate the result
+time.sleep(10)
+
+# Finishes the programS
+sim.stopSimulation()
+
+# Restore the original idle loop frequency:
+sim.setInt32Param(sim.intparam_idle_fps, defaultIdleFps)
+
+print('Program ended')
+
+

@@ -17,8 +17,8 @@ class CoppeliaManager:
         self.client.setStepping(True)
         self.sim.startSimulation()
 
-    def createPrimitiveShape(self, x, y, z):
-        shapeHandle = self.sim.createPrimitiveShape(self.sim.primitiveshape_capsule,[x, y, z], 0)
+    def createPrimitiveShape(self, type, x, y, z):
+        shapeHandle = self.sim.createPrimitiveShape(type, [x, y, z], 0)
         self.client.step()  # triggers next simulation step
 
         return shapeHandle
@@ -39,6 +39,11 @@ class CoppeliaManager:
         self.sim.setShapeColor(objectHandle, None, self.sim.colorcomponent_transparency, [0.5])
         self.client.step()  # triggers next simulation step
 
+    """
+    @dev: This function get the CoppeliaSim handle of a given object based on its name
+    @param: the name of the object in CoppeliaSim, for example "/Dummy"
+    @returns: the handle of an object
+    """
     def getObjectHandle(self, objectName):
         objectHandle = self.sim.getObject(objectName, None)
         self.client.step()  # triggers next simulation step
@@ -52,17 +57,17 @@ class CoppeliaManager:
     @author: Andres Masis
     '''
     def getObjectBoundingBoxSize(self, objectHandle):
-        # Gets the x lenght
+        # Gets the x length
         r, m = self.sim.getObjectFloatParameter(objectHandle, self.sim.objfloatparam_objbbox_max_x)
         r, n = self.sim.getObjectFloatParameter(objectHandle, self.sim.objfloatparam_objbbox_min_x)
         x = m - n
 
-        # Gets the y lenght
+        # Gets the y length
         r, m = self.sim.getObjectFloatParameter(objectHandle, self.sim.objfloatparam_objbbox_max_y)
         r, n = self.sim.getObjectFloatParameter(objectHandle, self.sim.objfloatparam_objbbox_min_y)
         y = m - n
 
-        # Gets the z lenght
+        # Gets the z length
         r, m = self.sim.getObjectFloatParameter(objectHandle, self.sim.objfloatparam_objbbox_max_z)
         r, n = self.sim.getObjectFloatParameter(objectHandle, self.sim.objfloatparam_objbbox_min_z)
         z = m - n
@@ -71,6 +76,7 @@ class CoppeliaManager:
         return x, y, z
     
     def stopSimulation(self):
+        # Stops the simulation
         self.sim.stopself.simulation()
 
         # Restore the original idle loop frequency:

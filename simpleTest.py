@@ -37,11 +37,12 @@ client.step()  # triggers next simulation step
 sim.setShapeColor(capsuleHandle, None, sim.colorcomponent_transparency, [0.5])
 
 # Get a handle
-dummyHandle = sim.getObject("/Dummy", None)
+time.sleep(5)
 
 sim.stopSimulation()
 
 # Restore the original idle loop frequency:
 sim.setInt32Param(sim.intparam_idle_fps, defaultIdleFps)
+
 
 print('Program ended')
