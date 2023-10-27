@@ -1,3 +1,4 @@
+
 import time
 
 from coppeliasim_zmqremoteapi_client import RemoteAPIClient
@@ -35,9 +36,15 @@ client.step()  # triggers next simulation step
 
 # Transparency
 sim.setShapeColor(capsuleHandle, None, sim.colorcomponent_transparency, [0.5])
+client.step()  # triggers next simulation step
 
-# Get a handle
-time.sleep(5)
+sim.setModelProperty(capsuleHandle, sim.modelproperty_not_dynamic)
+client.step()  # triggers next simulation step
+
+sim.setObjectAlias(capsuleHandle, "Pepe")
+client.step()  # triggers next simulation step
+
+time.sleep(10)
 
 sim.stopSimulation()
 
@@ -46,3 +53,5 @@ sim.setInt32Param(sim.intparam_idle_fps, defaultIdleFps)
 
 
 print('Program ended')
+
+

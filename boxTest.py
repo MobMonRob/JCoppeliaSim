@@ -1,3 +1,4 @@
+
 from coppeliasim_zmqremoteapi_client import RemoteAPIClient
 import time
 
@@ -69,12 +70,10 @@ client.step()  # triggers next simulation step
 # Sleep to appreciate the result
 time.sleep(10)
 
-# Finishes the programS
+# Finishes the program
 sim.stopSimulation()
 
 # Restore the original idle loop frequency:
 sim.setInt32Param(sim.intparam_idle_fps, defaultIdleFps)
 
 print('Program ended')
-
-
