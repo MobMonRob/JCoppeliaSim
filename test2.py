@@ -1,47 +1,25 @@
-import time
+import numpy as np
 
-from coppeliasim_zmqremoteapi_client import RemoteAPIClient
+def euler_angles(direction, up):
+    # Normalize input vectors
+    direction = np.array(direction) / np.linalg.norm(direction)
+    up = np.array(up) / np.linalg.norm(up)
 
-def func(input1, input2):
-    print('Hello', input1, input2)
-    return 21
+    # Calculate heading
+    heading = np.arctan2(direction[1], direction[0])
 
-print('Program started')
+    # Calculate pitch
+    pitch = np.arcsin(direction[2])
 
-client = RemoteAPIClient()
-sim = client.require('sim')
+    # Calculate bank
+    right = np.cross(direction, up)
+    bank = np.arccos(np.dot(right, np.array([1, 0, 0])))
 
-# Create a few dummies and set their positions:
-handles = [sim.createDummy(0.01, 12 * [0]) for _ in range(50)]
-for i, h in enumerate(handles):
-    sim.setObjectPosition(h, -1, [0.01 * i, 0.01 * i, 0.01 * i])
+    return (heading, pitch, bank)
 
-# Run a simulation in asynchronous mode:
-sim.startSimulation()
-while (t := sim.getSimulationTime()) < 3:
-    s = f'Simulation time: {t:.2f} [s] (simulation running asynchronously '\
-        'to client, i.e. non-stepping)'
-    print(s)
-    sim.addLog(sim.verbosity_scriptinfos, s)
-    # sim.testCB(21,func,42) # see below
-sim.stopSimulation()
-# If you need to make sure we really stopped:
-while sim.getSimulationState() != sim.simulation_stopped:
-    time.sleep(0.1)
+p1 = np.array((0, 0, 1))
+p2 = np.array((0, 0, 0))
 
-# Run a simulation in stepping mode:
-sim.setStepping(True)
-sim.startSimulation()
-while (t := sim.getSimulationTime()) < 3:
-    s = f'Simulation time: {t:.2f} [s] (simulation running synchronously '\
-        'to client, i.e. stepping)'
-    print(s)
-    sim.addLog(sim.verbosity_scriptinfos, s)
-    sim.step()  # triggers next simulation step
-sim.stopSimulation()
+a, b, g = euler_angles(p1, p2)
 
-# Remove the dummies created earlier:
-for h in handles:
-    sim.removeObject(h)
-
-print('Program ended')
+print(a)

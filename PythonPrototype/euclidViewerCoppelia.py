@@ -3,20 +3,20 @@ import coppeliaManager
 
 class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
 
-    def setObjectProperties(self, location, color, label, objectHandle, transparency):
+    def setObjectProperties(self, location, color, label, objectHandle):
         self.setObjectPosition(objectHandle, location.x, location.y, location.z)
         self.setObjectColor(objectHandle, color.r, color.g, color.b)
-        self.setObjectLabel(objectHandle, label)
-
-        if transparency:
-            self.makeObjectTransparent(objectHandle)     
+        self.setObjectLabel(objectHandle, label)   
 
     def addSphere(self, location, radius, color, label, transparency):
         # CoppeliaSim can generate spheroids, to get a equal-sided sphere you need to specify the 3 axis
         sphereHandle = self.createPrimitiveShape(self.sim.primitiveshape_spheroid, radius, radius, radius)
 
-        # Sets the generic properties of every object like its color, transpareny and positon in space
-        self.setObjectProperties(location, color, label, sphereHandle, transparency)
+        if transparency:
+            self.makeObjectTransparent(sphereHandle)  
+
+        # Sets the generic properties of every object like its color, and positon in space
+        self.setObjectProperties(location, color, label, sphereHandle)
 
     def calculateLengthLine(self, p1, p2):
         x1, y1, z1 = p1
@@ -26,4 +26,9 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
     def addLine(self, p1, p2, color, radius, label):
         length = self.calculateLengthLine(p1, p2)
 
-        sphereHandle = self.createPrimitiveShape(self.sim.primitiveshape_cylinder, radius, radius, radius)
+        lineHandle = self.createPrimitiveShape(self.sim.primitiveshape_cylinder, radius, radius, length)
+
+        location = 1 
+        self.setObjectProperties(location, color, label, lineHandle)
+
+    # def addCircle(location, normal, radius, color, label, isDashed, isFilled):
