@@ -37,6 +37,7 @@ class CoppeliaManager:
         shapeHandle = self.sim.createPrimitiveShape(type, [x, y, z], 0)
         self.client.step()  # triggers next simulation step
 
+        
         # Turns off the properties of the shape to make sure it will cause interference in the simulation
 
         # Makes the shape not dynamic
@@ -58,6 +59,7 @@ class CoppeliaManager:
         # Makes the shape not collidable
         self.sim.setModelProperty(shapeHandle, self.sim.modelproperty_not_collidable)
         self.client.step()  # triggers next simulation step
+        
 
         # The shape is ready, we can return its handle
         return shapeHandle
@@ -169,11 +171,11 @@ class CoppeliaManager:
     @author: Andres Masis
     '''
     def stopSimulation(self):
-        # Stops the simulation
-        self.sim.stopself.simulation()
+       # Stops the CoppeliaSim simulation
+       self.sim.stopSimulation()
 
-        # Restore the original idle loop frequency:
-        self.sim.setInt32Param(self.sim.intparam_idle_fps, self.defaultIdleFps)
+       # Restore the original idle loop frequency:
+       self.sim.setInt32Param(self.sim.intparam_idle_fps, self.defaultIdleFps)
 
     '''
     @dev: This function sets the label of a given object in the CoppeliaSim simulation
@@ -185,3 +187,8 @@ class CoppeliaManager:
     def setObjectLabel(self, objectHandle, label):
         self.sim.setObjectAlias(objectHandle, label)
         self.client.step()  # triggers next simulation step
+
+
+    def loadModel(self, filename):
+        objectHandle = self.sim.loadModel(filename)
+        return objectHandle

@@ -4,8 +4,8 @@ import coppeliaManager
 class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
 
     def setObjectProperties(self, location, color, label, objectHandle):
-        self.setObjectPosition(objectHandle, location.x, location.y, location.z)
-        self.setObjectColor(objectHandle, color.r, color.g, color.b)
+        self.setObjectPosition(objectHandle, location[0], location[1], location[2])
+        self.setObjectColor(objectHandle, color[0], color[1], color[2])
         self.setObjectLabel(objectHandle, label)   
 
     def addSphere(self, location, radius, color, label, transparency):
@@ -31,4 +31,14 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
         location = 1 
         self.setObjectProperties(location, color, label, lineHandle)
 
-    # def addCircle(location, normal, radius, color, label, isDashed, isFilled):
+    def addCircle(self, location, normal, radius, color, label, isDashed, isFilled):
+        circleHandle = self.createPrimitiveShape(self.sim.primitiveshape_disc, radius, radius, radius)
+        self.setObjectProperties(self, location, color, label, circleHandle)
+
+    def addRobot(self):
+        robotHandle = self.loadModel("UR5.ttm")
+        return robotHandle
+
+x = EuclidViewerCoppelia()
+y = x.calculateLengthLine((0,0,0), (1,1,1))
+print(y)
