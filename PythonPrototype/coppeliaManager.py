@@ -105,7 +105,7 @@ class CoppeliaManager:
     @author: Andres Masis
     '''
     def setObjectColor(self, objectHandle, r, g, b):
-        self.sim.setShapeColor(objectHandle, None, self.sim.colorcomponent_emission, [r, g, b])
+        self.sim.setShapeColor(objectHandle, None, self.sim.colorcomponent_ambient_diffuse, [r, g, b])
         self.client.step()  # triggers next simulation step
 
     '''

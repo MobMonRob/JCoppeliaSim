@@ -36,9 +36,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
         self.setObjectProperties(self, location, color, label, circleHandle)
 
     def addRobot(self):
-        robotHandle = self.loadModel("UR5.ttm")
+        ur5Path = "C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\models\\robots\\non-mobile\\UR5.ttm"
+        robotHandle = self.loadModel(ur5Path)
         return robotHandle
 
-x = EuclidViewerCoppelia()
-y = x.calculateLengthLine((0,0,0), (1,1,1))
-print(y)
