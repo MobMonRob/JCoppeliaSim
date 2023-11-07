@@ -11,16 +11,12 @@ class CoppeliaManager:
     @author: Andres Masis
     '''
     def startSimulation(self):
-        # Access to  the CoppeliaSim client
+        # Starts the CoppeliaSim client
         self.client = RemoteAPIClient()
-        self.sim = self.client.getObject('sim')
+        self.sim = self.client.require('sim')
 
-        # Makes sure that the idle loop runs at full speed for this program:
-        self.defaultIdleFps = self.sim.getInt32Param(self.sim.intparam_idle_fps)
-        self.sim.setInt32Param(self.sim.intparam_idle_fps, 0)
-
-        # Runs a simulation in stepping mode:
-        self.client.setStepping(True)
+        # Run a simulation in stepping mode:
+        self.sim.setStepping(True)
         self.sim.startSimulation()
 
     '''
@@ -165,6 +161,29 @@ class CoppeliaManager:
         return x, y, z
     
     '''
+    @dev: This function sets the alias of a given object in the CoppeliaSim simulation
+    @param: objectHandel: int of the handle of the object to set a alias
+            alias: string with the text of the alias            
+    @returns: void
+    @author: Andres Masis
+    '''
+    def setObjectAlias(self, objectHandle, alias):
+        self.sim.setObjectAlias(objectHandle, alias)
+        self.client.step()  # triggers next simulation step
+
+    '''
+    @dev: This function loads a model (.ttm file)
+    @param: filepath: string with the absolute path of the file       
+    @returns: void
+    @author: Andres Masis
+    '''
+    def loadModel(self, filepath):
+        objectHandle = self.sim.loadModel(filepath)
+        self.client.step()  # triggers next simulation step
+        
+        return objectHandle
+    
+    '''
     @dev: This function stops the CoppeliaSim simulation
     @param: None
     @returns: void
@@ -174,21 +193,4 @@ class CoppeliaManager:
        # Stops the CoppeliaSim simulation
        self.sim.stopSimulation()
 
-       # Restore the original idle loop frequency:
-       self.sim.setInt32Param(self.sim.intparam_idle_fps, self.defaultIdleFps)
-
-    '''
-    @dev: This function sets the label of a given object in the CoppeliaSim simulation
-    @param: objectHandel: int of the handle of the object to set a label
-            label: string with the text of the label            
-    @returns: void
-    @author: Andres Masis
-    '''
-    def setObjectLabel(self, objectHandle, label):
-        self.sim.setObjectAlias(objectHandle, label)
-        self.client.step()  # triggers next simulation step
-
-
-    def loadModel(self, filename):
-        objectHandle = self.sim.loadModel(filename)
-        return objectHandle
+    

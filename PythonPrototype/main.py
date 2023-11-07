@@ -5,6 +5,7 @@ location = (0, 0.25, 0.5)
 color = (120, 205, 130)
 
 manager = euclidViewerCoppelia.EuclidViewerCoppelia()
-manager.addRobot()
+x = manager.addRobot()
+manager.makeObjectTransparent(x)
 time.sleep(8)
 manager.stopSimulation()

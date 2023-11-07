@@ -1,79 +1,89 @@
+# Make sure to have the add-on "ZMQ remote API"
+# running in CoppeliaSim
+#
+# All CoppeliaSim commands will run in blocking mode (block
+# until a reply from CoppeliaSim is received). For a non-
+# blocking example, see simpleTest-nonBlocking.py
 
-from coppeliasim_zmqremoteapi_client import RemoteAPIClient
 import time
 
-'''
-@dev: This function gets the x, y, and z lenghts of the bounding box of a given object
-@param: the handle of the object to calculate its bounding box
-@returns: 3 values. The x length, the y length and the z length
-@author: Andres Masis
-'''
-def getObjectBoundingBoxSize(handle):
-    # Gets the x lenght
-    r, m = sim.getObjectFloatParameter(handle, sim.objfloatparam_objbbox_max_x)
-    r, n = sim.getObjectFloatParameter(handle, sim.objfloatparam_objbbox_min_x)
-    x = m - n
+from coppeliasim_zmqremoteapi_client import RemoteAPIClient
 
-    # Gets the y lenght
-    r, m = sim.getObjectFloatParameter(handle, sim.objfloatparam_objbbox_max_y)
-    r, n = sim.getObjectFloatParameter(handle, sim.objfloatparam_objbbox_min_y)
-    y = m - n
+def myFunc(input1, input2):
+    print('Hello', input1, input2)
+    return 21
 
-    # Gets the z lenght
-    r, m = sim.getObjectFloatParameter(handle, sim.objfloatparam_objbbox_max_z)
-    r, n = sim.getObjectFloatParameter(handle, sim.objfloatparam_objbbox_min_z)
-    z = m - n
+print('Program started')
 
-    # Returns all the values
-    return x, y, z
-
-# Access to  the CoppeliaSim client
 client = RemoteAPIClient()
-sim = client.getObject('sim')
+sim = client.require('sim')
 
-# Makes sure that the idle loop runs at full speed for this program:
-defaultIdleFps = sim.getInt32Param(sim.intparam_idle_fps)
-sim.setInt32Param(sim.intparam_idle_fps, 0)
+# Create a few dummies and set their positions:
+handles = [sim.createDummy(0.01, 12 * [0]) for _ in range(50)]
+for i, h in enumerate(handles):
+    sim.setObjectPosition(h, -1, [0.01 * i, 0.01 * i, 0.01 * i])
+
+# Run a simulation in asynchronous mode:
+sim.startSimulation()
+while (t := sim.getSimulationTime()) < 3:
+    s = f'Simulation time: {t:.2f} [s] (simulation running asynchronously '\
+        'to client, i.e. non-stepping)'
+    print(s)
+    sim.addLog(sim.verbosity_scriptinfos, s)
+    # sim.testCB(21,myFunc,42) # see below. sim.testCB is calling back above "myFunc"
+
+# e.g. calling a child script function (make sure the child script is running!):
+'''    
+sceneObject = sim.getObject('/path/to/object')
+script = sim.getScript(sim.scripttype_childscript, sceneObject)
+reply = sim.callScriptFunction('functionName', script, 'Hello', 'Paul', 21)
+'''
+#or
+'''
+sceneObject = sim.getObject('/path/to/object')
+script = sim.getScript(sim.scripttype_childscript, sceneObject)
+funcs = client.getScriptFunctions(script)
+reply = funcs.functionName('Hello', 'Paul', 21)
+'''    
+    
+sim.stopSimulation()
+# If you need to make sure we really stopped:
+while sim.getSimulationState() != sim.simulation_stopped:
+    time.sleep(0.1)
 
 # Run a simulation in stepping mode:
-client.setStepping(True)
+sim.setStepping(True)
 sim.startSimulation()
+while (t := sim.getSimulationTime()) < 3:
+    s = f'Simulation time: {t:.2f} [s] (simulation running synchronously '\
+        'to client, i.e. stepping)'
+    print(s)
+    sim.addLog(sim.verbosity_scriptinfos, s)
+    sim.step()  # triggers next simulation step
+sim.addLog(sim.verbosity_scriptinfos,"Wait 1")
 
-# Get all of the elements of the scene.
-scene_objects = sim.getObjectsInTree(sim.handle_scene, sim.handle_all, 0)
-client.step()  # triggers next simulation step
+time.sleep(8)
 
-# Create group of objects
-groupHandle = sim.groupShapes(scene_objects, False)
-client.step()  # triggers next simulation step
+sim.addLog(sim.verbosity_scriptinfos,"Will add sphere")
 
-x, y, z = getObjectBoundingBoxSize(groupHandle)
 
-sim.ungroupShape(groupHandle)
-client.step()  # triggers next simulation step
 
-boxHandle = sim.createPrimitiveShape(sim.primitiveshape_cuboid,[x, y, z], 0)
-client.step()  # triggers next simulation step
+time.sleep(8)
 
-# Color
-sim.setShapeColor(boxHandle, None, sim.colorcomponent_emission, [0, 255, 0])
-client.step()  # triggers next simulation step
-
-# Transparency
-sim.setShapeColor(boxHandle, None, sim.colorcomponent_transparency, [0.5])
-client.step()  # triggers next simulation step
-
-# Position
-sim.setObjectPosition(boxHandle, sim.handle_parent, [0.255, 0.225, 0.225])
-client.step()  # triggers next simulation step
-
-# Sleep to appreciate the result
-time.sleep(10)
-
-# Finishes the program
 sim.stopSimulation()
 
-# Restore the original idle loop frequency:
-sim.setInt32Param(sim.intparam_idle_fps, defaultIdleFps)
+# Remove the dummies created earlier:
+for h in handles:
+    sim.removeObject(h)
 
 print('Program ended')
+
+''' test callback on CoppeliaSim side:
+int ret = sim.testCB(int a, func cb, int b)
+function sim.testCB(a, cb, b)
+    for i = 1, 99, 1 do
+        cb(a, b)
+    end
+    return cb(a, b)
+end
+'''

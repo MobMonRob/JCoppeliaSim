@@ -1,3 +1,4 @@
+"""
 import math
 
 
@@ -46,4 +47,57 @@ def getEulerAnglesToRotateFromZ(targetDir):
         alpha = z.angle(targetDir)
         
         return toEuler(rot, alpha)
+"""
+# Make sure to have the add-on "ZMQ remote API"
+# running in CoppeliaSim
+#
+# All CoppeliaSim commands will run in blocking mode (block
+# until a reply from CoppeliaSim is received). For a non-
+# blocking example, see simpleTest-nonBlocking.py
 
+import time
+
+from coppeliasim_zmqremoteapi_client import RemoteAPIClient
+
+
+print('Program started')
+
+client = RemoteAPIClient()
+sim = client.require('sim')
+
+# Run a simulation in stepping mode:
+sim.setStepping(True)
+sim.startSimulation()
+
+# Create shape
+capsuleHandle = sim.createPrimitiveShape(sim.primitiveshape_capsule,[0.2, 0.3, 1], 0)
+client.step()  # triggers next simulation step
+
+# Orientation
+sim.setObjectOrientation(capsuleHandle, sim.handle_parent, [0, 1.57, 0])
+client.step()  # triggers next simulation step
+
+# Position
+sim.setObjectPosition(capsuleHandle, sim.handle_parent, [0, 0, 0.5])
+client.step()  # triggers next simulation step
+
+# Color
+sim.setShapeColor(capsuleHandle, None, sim.colorcomponent_emission, [0, 255, 0])
+client.step()  # triggers next simulation step
+
+# Transparency
+sim.setShapeColor(capsuleHandle, None, sim.colorcomponent_transparency, [0.5])
+client.step()  # triggers next simulation step
+
+sim.setModelProperty(capsuleHandle, sim.modelproperty_not_dynamic)
+client.step()  # triggers next simulation step
+
+sim.setObjectAlias(capsuleHandle, "Pepe")
+client.step()  # triggers next simulation step
+
+time.sleep(10)
+
+sim.stopSimulation()
+
+
+print('Program ended')
