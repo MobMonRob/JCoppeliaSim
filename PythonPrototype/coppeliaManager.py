@@ -7,17 +7,23 @@ class CoppeliaManager:
     '''
     @dev: This function remotely starts the simulation in CoppeliaSim
     @param: None
-    @returns: void
+    @returns: True if the process was succesful
+              False if an exception happens
     @author: Andres Masis
     '''
     def startSimulation(self):
-        # Starts the CoppeliaSim client
-        self.client = RemoteAPIClient()
-        self.sim = self.client.require('sim')
+        try:
+            # Starts the CoppeliaSim client
+            self.client = RemoteAPIClient()
+            self.sim = self.client.require('sim')
 
-        # Run a simulation in stepping mode:
-        self.sim.setStepping(True)
-        self.sim.startSimulation()
+            # Run a simulation in stepping mode:
+            self.sim.setStepping(True)
+            self.sim.startSimulation()
+            return True
+
+        except Exception as e:
+            return False
 
     '''
     @dev: This function creates a primitive shape (sphere, cuboid, etc) in the scene
@@ -182,6 +188,22 @@ class CoppeliaManager:
         self.client.step()  # triggers next simulation step
         
         return objectHandle
+    
+    """
+    @dev: Auxiliary function
+        This function sets the general properties of any shape. 
+        Its position, color and label
+    @param: location: Point3d with the x, y, z position
+            color: Color data type with the r, g, b values
+            label: string with the text of the label to assign
+            objectHandle: int with the handle of the object to interact with 
+    @returns: void
+    @author: Andres Masis
+    """
+    def setObjectProperties(self, location, color, label, objectHandle):
+        self.setObjectPosition(objectHandle, location[0], location[1], location[2])
+        self.setObjectColor(objectHandle, color[0], color[1], color[2])
+        self.setObjectLabel(objectHandle, label)   
     
     '''
     @dev: This function stops the CoppeliaSim simulation
