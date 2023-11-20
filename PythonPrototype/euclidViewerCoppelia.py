@@ -226,7 +226,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     @returns: void
     @author: Andres Masis
     """
-    def moveRobot(self, handle, angels):
+    def moveRobot(self, handle, angles):
         pass
 
     """
@@ -236,7 +236,11 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     @author: Andres Masis
     """
     def removeNode(self, handle):
-        pass
+        try:
+            self.sim.removeModel(handle)
+            return True
+        except Exception as e:
+            return False
 
     """
     @dev: This function removes and object in the CoppeliaSim scene
