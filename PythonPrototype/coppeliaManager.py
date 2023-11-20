@@ -232,9 +232,18 @@ class CoppeliaManager:
 
         return arrowHandle
     
-    def importMesh(self):
-        self.sim.importMesh(int fileformat, string pathAndFilename, int options, 
-                                             float identicalVerticeTolerance, float scalingFactor)
+    """
+    @dev: This function imports a mesh (.obj model) into the CoppeliaSim scene
+          Auxiliary funtion
+    @param: pathAndFileName: string, location of the file to import
+            scalingFactor: float, the scaling factor to apply to the imported vertices
+    @returns: integer with the handle of the imported shape
+    @author: Andres Masis
+    """
+    def importShape(self, pathAndFilename, scalingFactor):
+        # This 32 is necessary to align the objects bounding box
+        shapeHandle = self.sim.importShape(0, pathAndFilename, 32, 0, scalingFactor)
+        return shapeHandle
 
     '''
     @dev: This function stops the CoppeliaSim simulation

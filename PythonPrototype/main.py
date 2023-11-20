@@ -1,10 +1,10 @@
 import euclidViewerCoppelia
 import time
 
-location = (0, 0.25, 0.5)
-color = (120, 205, 130)
+location = (1, 1, 1)
+color = (0, 0, 0)
 
 manager = euclidViewerCoppelia.EuclidViewerCoppelia()
-x = manager.loadModel("C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\DottedCircle.obj")
+x = manager.addCircle(location, [], 1, color, "Summertime", False, False)
 time.sleep(8)
 manager.stopSimulation()

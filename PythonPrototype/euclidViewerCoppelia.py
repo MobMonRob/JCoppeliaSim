@@ -120,8 +120,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
 
     """
     @dev: This function adds a new 2d circle in the CoppeliaSim scene
-          INCOMPLETE, missing the euler angles for the normal and the circle
-          Missing dashed and empty circle
+          INCOMPLETE, MISSING THE EULER ANGLES BASED ON THE NORMAL
     @param: location: Point3d with the x, y, z position of the circle
             normal: Vector3d with the normal vector (90 degrees) to the circle
             radius: double with the radius of the circle
@@ -135,8 +134,28 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     """
     def addCircle(self, location, normal, radius, color, label, isDashed, isFilled):
 
-        circleHandle = self.createPrimitiveShape(self.sim.primitiveshape_disc, radius, radius, radius)
-        self.setObjectProperties(self, location, color, label, circleHandle)
+        if isFilled:
+            # It is a normal circle, we can create the circle based on the given radius
+            circleHandle = self.createPrimitiveShape(self.sim.primitiveshape_disc, radius, radius, radius)
+
+        else:
+            # Is empty, may be dashed or not
+            if isDashed:
+                #It is empty and dashed, we can import the shape and send the given radius to scale it
+                circleHandle = self.importShape("C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\DashedCircle.obj",  radius)
+                                     
+            else:
+                #It is just empty, we can import the shape to scale it
+                circleHandle = self.importShape("C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\EmptyCircle.obj",  radius)
+                               
+        # DO SOME STUFF WITH THE NORMAL TO GET THE EULER ANGLES
+
+        # Sets the circle general properties like its location, color and label
+        self.setObjectProperties(location, color, label, circleHandle)
+
+        # The circle is ready, we can return its handle
+        return circleHandle
+
 
     """
     @dev: Adds a polygone (any proportions and amount of sides) to the CoppeliaSim scene
@@ -156,6 +175,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     """
     @dev: This function adds a cube to the CoppeliaSim scene
           The cuboid is a native Coppelia figure, so just add a regular cuboid
+          INCOMPLETE, MISSING THE EULER ANGLES BASED ON DIR
     @param: location: Point3d with the x, y, z location of the cube
             dir: Vector3d with a vector that determines the direction/orientation of the cube
             width: double that determines the siye of the cube
@@ -165,8 +185,22 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     @returns: long with the handle of the generated cube
     @author: Andres Masis
     """
-    def addCube(self, location, dir, width, color, label, tranparency):
-        pass
+    def addCube(self, location, dir, width, color, label, transparency):
+        cubeHandle = self.createPrimitiveShape(self.sim.primitiveshape_cuboid, width, width, width)
+
+        # Checks if has to make the sphere transparent
+        if transparency:
+            self.makeObjectTransparent(cubeHandle)  
+
+        # DO SOME STUFF TO MANAGE THE EULER ANGLES BASED ON DIR
+
+        # Sets the circle general properties like its location, color and label
+        self.setObjectProperties(location, color, label, cubeHandle)
+
+        # The circle is ready, we can return its handle
+        return cubeHandle
+
+
     
     """
     @dev: This function adds a new robot into the CoppeliaSim scene
