@@ -1,7 +1,8 @@
-import math
-import coppeliaManager
 
-class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
+import coppeliaManager
+import mathAuxiliar
+
+class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAuxiliar):
 
     """
     @dev: This function opens the CoppeliaSim scene
@@ -64,25 +65,9 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
         return sphereHandle
 
     """
-    @dev: Auxiliary function
-          This function calculates the distance between 2 3d points
-    @param: p1: Point3d with the coordinates x1, y1, z1
-            p2: Point3d with the coordinates x2, y2, z2
-    @returns: double with the distance between those point
-    @author: Andres Masis
-    """
-    def calculateLengthLine(self, p1, p2):
-        # Gets the independent x, y, z values
-        x1, y1, z1 = p1
-        x2, y2, z2 = p2
-
-        # Calculates the length in the 3d space and returns that result
-        return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2)
-
-    """
     @dev: This function adds a new line in the CoppeliaSim scene
           There is no native line in CoppeliaSim, so it is actually a very long and thin cylinder
-          INCOMPLETE, missing the euler angles and position in space
+          INCOMPLETE, missing the euler angles
     @param: p1: Point3d with the x, y, z position of the start of the line
             p2: Point3d with the x, y, z position of the end of the line
             color: Color data type with the r, g, b values of the line
@@ -96,20 +81,25 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
         length = self.calculateLengthLine(p1, p2)
 
         # Creates the line
-        # make sure to put the radius at first length at last to make sure it is thin and long
+        # make sure to put the radius at first and length at last to make sure it is thin and long
         lineHandle = self.createPrimitiveShape(self.sim.primitiveshape_cylinder, radius, radius, length)
 
-        # Calculates and sets the orientation of the line        
+        # Calculates and sets the orientation of the line  
+        
+        # Some code for the euler angles
 
         # Calculates the location of the line
-        location = 1 
+        location = self.calculateCenter(p1, p2)
 
         # Sets the general properties of the object: location, color and label
         self.setObjectProperties(location, color, label, lineHandle)
 
+        return lineHandle
+
     """
     @dev: This function adds an arrow to the CoppeliaSim scene
-          There is no native arrow in CoppeliaSim (add a premade model, cylinder and cone?)
+          There is no native arrow in CoppeliaSim (add a cylinder and cone)
+          INCOMPLETE, missing the Euler angles
     @param: location: Point3d with the x, y, z coordinates of the start point of the arrow
             direction: Vector3d that describes the direction of the arrow
             radius: double with the thickness of the arrow line
@@ -119,8 +109,14 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
     @author: Andres Masis
     """
     def addArrow(self, location, direction, radius, color, label):
-        pass
-    
+        arrowHandle = self.createArrow(radius)
+
+        # Some code to manage the euler angles
+
+        # Sets the properties of the new arrow
+        self.setObjectProperties(location, color, label, arrowHandle)
+
+        return arrowHandle
 
     """
     @dev: This function adds a new 2d circle in the CoppeliaSim scene
@@ -180,7 +176,8 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
     """
     def addRobot(self):
         # Hardcoded location of the robot file
-        ur5Path = "C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\models\\robots\\non-mobile\\UR5.ttm"
+        #ur5Path = "C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\models\\robots\\non-mobile\\UR5.ttm"
+        ur5Path = "C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\UR5.ttm"
 
         # Load the model in the scene
         robotHandle = self.loadModel(ur5Path)
@@ -188,9 +185,32 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
         # Return the handle of the loaded robot
         return robotHandle
     
-    public void moveRobot(long handle, double[] angels);
+    """
+    @dev: This function moves a robot into a new position in the CoppeliaSim scene
+    @param: handle: long with the numeric handle of the object
+            angles: double[] array with the angles of the movement
+    @returns: void
+    @author: Andres Masis
+    """
+    def moveRobot(self, handle, angels):
+        pass
 
-    public boolean removeNode(long handle);
+    """
+    @dev: This function removes and object in the CoppeliaSim scene
+    @param: handle: long with the numeric handle of the object
+    @returns: boolean. True if it was removed properly, False if an error happened
+    @author: Andres Masis
+    """
+    def removeNode(self, handle):
+        pass
 
-    public void transform(long handle, Matrix4d transform);
+    """
+    @dev: This function removes and object in the CoppeliaSim scene
+    @param: handle: long with the numeric handle of the object
+            transform: Matrix4d with the transformation matrix
+    @returns: void
+    @author: Andres Masis
+    """
+    def transform(self, handle, transform):
+        pass
 

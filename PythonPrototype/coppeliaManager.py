@@ -203,8 +203,39 @@ class CoppeliaManager:
     def setObjectProperties(self, location, color, label, objectHandle):
         self.setObjectPosition(objectHandle, location[0], location[1], location[2])
         self.setObjectColor(objectHandle, color[0], color[1], color[2])
-        self.setObjectLabel(objectHandle, label)   
+        self.setObjectAlias(objectHandle, label)   
+
+    """
+    @dev: Auxiliary funtion that creates an arrow by merging a cylinder and a cone
+    @param: radius: double with the thickness of the arrow line
+    @returns: long with the handle of the created arrow
+    @author: Andres Masis
+    """
+    def createArrow(self, radius):
+        # Calculates the lenght of the line based on the radius to make it symetrical
+        lineLength = radius * 50
+
+        # Creates the line
+        # make sure to put the radius at first and length at last to make sure it is thin and long
+        lineHandle = self.createPrimitiveShape(self.sim.primitiveshape_cylinder, radius, radius, lineLength)
+
+        # Calculates the size of the nose(cone) based on the radius to make it symetrical
+        coneDimension = radius * 5
+
+        # Creates the nose
+        coneHandle = self.createPrimitiveShape(self.sim.primitiveshape_cone, coneDimension, coneDimension, coneDimension)
+        # Puts the nose (cone) at the final point of the line (cylinder)
+        self.setObjectPosition(coneHandle, 0, 0, lineLength/2)
+
+        # Merges both shapes in a single arrow
+        arrowHandle = self.sim.groupShapes([lineHandle, coneHandle], False)
+
+        return arrowHandle
     
+    def importMesh(self):
+        self.sim.importMesh(int fileformat, string pathAndFilename, int options, 
+                                             float identicalVerticeTolerance, float scalingFactor)
+
     '''
     @dev: This function stops the CoppeliaSim simulation
     @param: None
