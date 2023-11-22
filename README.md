@@ -7,7 +7,7 @@ To install the simulator itself, you only need to go to the following link:
 There, download the Edu version.
 Once you have downloaded the installer, just click over it and follow the Wizard, it is recommended to just follow the default settings of the wizard and just click on yes.
 
-### Python Library
+### Python Client
 In order for the Python library to work properly, it needs some previous requirements.
 1. Make sure your Python interpreter is at least 3.8
 ```
@@ -40,9 +40,25 @@ $ cmake --install .
 ```
 -- If cmake is not recognized as a command [this video](https://www.youtube.com/watch?v=GJy_bw2Vg5c) can help: 
 
+### Java Client
+> First, to use the the Java client, you first need to settle the Python client. The Java client relies on a wrapper of the Python client, that is why it is necessary. First make sure that the the Python client is working before using the Java client.
+
+For Java, you also need to install the VecMath library, which is used to calculate the Euler Angles.
+
+To use the vecmath library from the refactured version of jogamp in your project, you'll need to manually download the jar file and add it as a local dependency. Right-click on the project's dependencies in NetBeans IDE and add the following dependency:
+
+```
+group id: org.jogamp.java3d
+artifact id: vecmath
+type: jar
+```
+If the dependency already exists, right-click on it and manually add the needed jar file.
+
+To see an example of how to add a JAR file manually, you can check minute 5:16 of this [video](https://www.youtube.com/watch?v=L5fRigcRqGY&t=465s). 
+
 ## How to use it
 
-This relies on the CoppeliaSim Regular API. You can find information (only for C/C++, Lua and Python) on all the methods it has on: [CoppeliaSim User Manual](https://www.coppeliarobotics.com/helpFiles/). At the left menu in:
+This relies on the CoppeliaSim Regular API. You can find information (only for Lua and Python) on all the methods it has on: [CoppeliaSim User Manual](https://www.coppeliarobotics.com/helpFiles/). At the left menu in:
 * Writing code -> CoppeliaSim API framework -> Regular API reference
 
 You always have to start your program with the following lines of code:
