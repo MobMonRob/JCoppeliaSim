@@ -65,15 +65,12 @@ You always have to start your program with the following lines of code:
 ``` python
 from coppesim_zmqremoteapi_client import RemoteAPIClient
 
+# Starts the CoppeliaSim client
 client = RemoteAPIClient()
-sim = client.getObject('sim')
-
-# Makes sure that the idle loop runs at full speed for this program:
-defaultIdleFps = sim.getInt32Param(sim.intparam_idle_fps)
-sim.setInt32Param(sim.intparam_idle_fps, 0)
+sim = client.require('sim')
 
 # Run a simulation in stepping mode:
-client.setStepping(True)
+sim.setStepping(True)
 sim.startSimulation()
 ```
 
@@ -86,13 +83,12 @@ client.step()  # triggers next simulation step
 And you should always end your program with these lines of code:
 ``` python
 sim.stopSimulation()
-
-# Restore the original idle loop frequency, no step() needed here
-sim.setInt32Param(sim.intparam_idle_fps, defaultIdleFps)
 ```
 
 ## What is the stepping mode
 In this mode, the simulation waits before advancing to the next simulation step. This trigger can be sent by the client using the remote. This mode gives the client more control over the simulation, as they can decide when to advance the simulation time. This feature is useful for debugging and testing purposes.
+
+# CoppeliaSim documentation and support
 
 ## Do not confuse
 There is a deprecated library that uses methods starting with simx. Notice that the methods of the regularAPI use methods starting with, sim (without x), not simx.
@@ -102,3 +98,8 @@ Sadly, by October of 2023, the only existing documentation for the new sim metho
 All the forums, YouTube videos and AI chatbots give information about simx (which is legacy code, so using it is not the best practice and it is not the library used in this project). 
 
 Unless you want to use simx examples as a secondary support for understanding, it is highly recommended to just focus on the Regular API Reference to avoid losing time with no point. 
+
+## Other support
+To get support from the CoppeliaSim vendors or other users, you can use the official [forum](https://forum.coppeliarobotics.com/). To post something you need an account (you can use a Google account too). There you can ask questions or report bugs and sometimes they answer.
+
+# Final notes
