@@ -102,4 +102,12 @@ Unless you want to use simx examples as a secondary support for understanding, i
 ## Other support
 To get support from the CoppeliaSim vendors or other users, you can use the official [forum](https://forum.coppeliarobotics.com/). To post something you need an account (you can use a Google account too). There you can ask questions or report bugs and sometimes they answer.
 
-# Final notes
+# Problems of CoppeliaSim to consider
+CoppeliaSim can be difficult to learn and use. The interface can be confusing, and the documentation is not always helpful. As said before, the material is very limited and the support to developers is very little.
+
+Moreover, the simulator is not always stable. Sometimes, simulations can crash or become unstable.
+In addition, they are constatly realising new updates. But this is many times a problems. Because they new updates tend to be unstable. So commonly they produce errors or come with bugs. This forces the developer to wait for another release hoping it is stable. Or rollback to a previous version, but in the forum and the user manual, they only give support for the latest version. So with a rollback you lose receiving support. In addition, sometimes with new updates they change the name of methods, so you have to rewrite your code. Also, the few code examples they release change drastically very frequently. So it is difficult ot keep a track on how to work with this tool.
+
+Another problem, is that they are focusing heavily just in Python and Lua. Which is leaving a detrimental support for other languages. As said before, they are wrapping everything to Python. Which adds overhead by always needing all the setup for the Python client, also reduces the performance and affects a complete compatibility with other languages.
+
+CoppeliaSim is not always easy to customize. The functions of the API, primitive shapes and other aspects are very limited and does not leave to much room for customization or making certain actions in the simulator. The simulator's API is not very well documented, and it can be difficult to modify the simulator's behavior. Many times it is not clear what a function does or what ypu should send as parameters.
