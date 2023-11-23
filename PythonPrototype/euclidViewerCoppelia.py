@@ -76,13 +76,19 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     @returns: long with the handle of the created line
     @author: Andres Masis
     """
-    def addLine(self, p1, p2, color, radius, label):
+    def addLine(self, p1, p2, color, radius, label, addCones):
         # Calculates the lenght of the line
         length = self.calculateLengthLine(p1, p2)
 
-        # Creates the line
-        # make sure to put the radius at first and length at last to make sure it is thin and long
-        lineHandle = self.createPrimitiveShape(self.sim.primitiveshape_cylinder, radius, radius, length)
+        # Creates the line     
+        if addCones:
+            # It has cones, we need to call a function to created that merged shape
+            lineHandle = self.createLineWithCones(radius, length)
+
+        else:
+            # It is a simple line, we can create a primitive cylinder
+            # make sure to put the radius at first and length at last to make sure it is thin and long
+            lineHandle = self.createPrimitiveShape(self.sim.primitiveshape_cylinder, radius, radius, length)
 
         # Calculates and sets the orientation of the line  
         
@@ -111,7 +117,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     def addArrow(self, location, direction, radius, color, label):
         arrowHandle = self.createArrow(radius)
 
-        # Some code to manage the euler angles
+        # SOME CODE TO MANAGE THE EULER ANGLES
 
         # Sets the properties of the new arrow
         self.setObjectProperties(location, color, label, arrowHandle)
@@ -148,7 +154,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
                 #It is just empty, we can import the shape to scale it
                 circleHandle = self.importShape("C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\EmptyCircle.obj",  radius)
                                
-        # DO SOME STUFF WITH THE NORMAL TO GET THE EULER ANGLES
+        # SOME CODE TO MANAGE THE EULER ANGLES
 
         # Sets the circle general properties like its location, color and label
         self.setObjectProperties(location, color, label, circleHandle)
@@ -238,6 +244,8 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     def removeNode(self, handle):
         try:
             self.sim.removeModel(handle)
+            self.client.step()  # triggers next simulation step
+            
             return True
         except Exception as e:
             return False
@@ -250,5 +258,17 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     @author: Andres Masis
     """
     def transform(self, handle, transform):
-        pass
+        # Pseudocode of how it would look like in Java, there is no Matrix4d data type in Python
+        # Just to give an example of how to get the values we need
+        alpha = transform.getAlphaDegree()
+        beta = transform.getAlphaDegree()
+        gamma = transform.getAlphaDegree()
+
+        x = transform.getX()
+        y = transform.getY()
+        z = transform.getY()
+        
+        # Real code of how to use the CoppeliaManager functions once we have the necessary values
+        self.setObjectPosition(handle, x, y, z)
+        self.setObjectOrientation(handle, alpha, beta, gamma)
 

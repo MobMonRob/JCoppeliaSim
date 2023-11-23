@@ -1,13 +1,15 @@
 import euclidViewerCoppelia
 import time
 
-location = (1, 1, 1)
+location = (0, 0, 0.5)
 color = (0, 0, 0)
 
 manager = euclidViewerCoppelia.EuclidViewerCoppelia()
-x = manager.addCircle(location, [], 0.25, color, "My circle", True, False)
-time.sleep(4)
-manager.removeNode(x)
-print("Removed the circle")
-time.sleep(3)
+
+p1 = (0,0,0)
+p2 = (0,0,1)
+x = manager.addLine(p1, p2, color, 0.01, "myLabel", True)
+time.sleep(6)
+print(manager.removeNode(x))
+time.sleep(6)
 manager.stopSimulation()

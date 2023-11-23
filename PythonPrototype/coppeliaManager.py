@@ -38,8 +38,7 @@ class CoppeliaManager:
         # Creates the shape
         shapeHandle = self.sim.createPrimitiveShape(type, [x, y, z], 0)
         self.client.step()  # triggers next simulation step
-
-        
+     
         # Turns off the properties of the shape to make sure it will cause interference in the simulation
 
         # Makes the shape not dynamic
@@ -65,6 +64,32 @@ class CoppeliaManager:
 
         # The shape is ready, we can return its handle
         return shapeHandle
+    
+    """
+    @dev: This function get the CoppeliaSim handle of a given object based on its name
+          This function is mostly used for testing, so far it has no use in the app itself
+    @param: the name of the object in CoppeliaSim, for example "/Dummy"
+    @returns: the handle of an object
+    @author: Andres Masis
+    """
+    def getObjectHandle(self, objectName):
+        objectHandle = self.sim.getObject(objectName, None)
+        self.client.step()  # triggers next simulation step
+
+        return objectHandle
+    
+    '''
+    @dev: This function makes slightly transparent a figure in the CoppeliaSim scene
+    @param: objectHandle: integer of the handle of the object in CoppeliaSim
+            r: integer between 0 and 255 of the red intensity
+            g: integer between 0 and 255 of the green intensity
+            b: integer between 0 and 255 of the blue intensity
+    @returns: void
+    @author: Andres Masis
+    '''
+    def makeObjectTransparent(self, objectHandle):
+        self.sim.setShapeColor(objectHandle, None, self.sim.colorcomponent_transparency, [0.5])
+        self.client.step()  # triggers next simulation step
 
     '''
     @dev: This function sets the orientation of a figure in the space of the CoppeliaSim scene
@@ -96,7 +121,6 @@ class CoppeliaManager:
         self.sim.setObjectPosition(objectHandle, self.sim.handle_parent, [x, y, z])
         self.client.step()  # triggers next simulation step
 
-
     '''
     @dev: This function sets the color of a figure in the CoppeliaSim scene
     @param: objectHandle: integer of the handle of the object in CoppeliaSim
@@ -109,32 +133,34 @@ class CoppeliaManager:
     def setObjectColor(self, objectHandle, r, g, b):
         self.sim.setShapeColor(objectHandle, None, self.sim.colorcomponent_ambient_diffuse, [r, g, b])
         self.client.step()  # triggers next simulation step
-
+    
     '''
-    @dev: This function makes slightly transparent a figure in the CoppeliaSim scene
-    @param: objectHandle: integer of the handle of the object in CoppeliaSim
-            r: integer between 0 and 255 of the red intensity
-            g: integer between 0 and 255 of the green intensity
-            b: integer between 0 and 255 of the blue intensity
+    @dev: This function sets the alias of a given object in the CoppeliaSim simulation
+    @param: objectHandel: int of the handle of the object to set a alias
+            alias: string with the text of the alias            
     @returns: void
     @author: Andres Masis
     '''
-    def makeObjectTransparent(self, objectHandle):
-        self.sim.setShapeColor(objectHandle, None, self.sim.colorcomponent_transparency, [0.5])
+    def setObjectAlias(self, objectHandle, alias):
+        self.sim.setObjectAlias(objectHandle, alias)
         self.client.step()  # triggers next simulation step
-
+    
     """
-    @dev: This function get the CoppeliaSim handle of a given object based on its name
-    @param: the name of the object in CoppeliaSim, for example "/Dummy"
-    @returns: the handle of an object
+    @dev: Auxiliary function
+        This function sets the general properties of any shape. 
+        Its position, color and label
+    @param: location: Point3d with the x, y, z position
+            color: Color data type with the r, g, b values
+            label: string with the text of the label to assign
+            objectHandle: int with the handle of the object to interact with 
+    @returns: void
     @author: Andres Masis
     """
-    def getObjectHandle(self, objectName):
-        objectHandle = self.sim.getObject(objectName, None)
-        self.client.step()  # triggers next simulation step
+    def setObjectProperties(self, location, color, label, objectHandle):
+        self.setObjectPosition(objectHandle, location[0], location[1], location[2])
+        self.setObjectColor(objectHandle, color[0], color[1], color[2])
+        self.setObjectAlias(objectHandle, label)   
 
-        return objectHandle
-    
     '''
     @dev: This function gets the x, y, and z lenghts of the bounding box of a given object
     @param: the handle of the object to calculate its bounding box
@@ -165,45 +191,6 @@ class CoppeliaManager:
 
         # Returns all the values
         return x, y, z
-    
-    '''
-    @dev: This function sets the alias of a given object in the CoppeliaSim simulation
-    @param: objectHandel: int of the handle of the object to set a alias
-            alias: string with the text of the alias            
-    @returns: void
-    @author: Andres Masis
-    '''
-    def setObjectAlias(self, objectHandle, alias):
-        self.sim.setObjectAlias(objectHandle, alias)
-        self.client.step()  # triggers next simulation step
-
-    '''
-    @dev: This function loads a model (.ttm file)
-    @param: filepath: string with the absolute path of the file       
-    @returns: void
-    @author: Andres Masis
-    '''
-    def loadModel(self, filepath):
-        objectHandle = self.sim.loadModel(filepath)
-        self.client.step()  # triggers next simulation step
-        
-        return objectHandle
-    
-    """
-    @dev: Auxiliary function
-        This function sets the general properties of any shape. 
-        Its position, color and label
-    @param: location: Point3d with the x, y, z position
-            color: Color data type with the r, g, b values
-            label: string with the text of the label to assign
-            objectHandle: int with the handle of the object to interact with 
-    @returns: void
-    @author: Andres Masis
-    """
-    def setObjectProperties(self, location, color, label, objectHandle):
-        self.setObjectPosition(objectHandle, location[0], location[1], location[2])
-        self.setObjectColor(objectHandle, color[0], color[1], color[2])
-        self.setObjectAlias(objectHandle, label)   
 
     """
     @dev: Auxiliary funtion that creates an arrow by merging a cylinder and a cone
@@ -224,13 +211,77 @@ class CoppeliaManager:
 
         # Creates the nose
         coneHandle = self.createPrimitiveShape(self.sim.primitiveshape_cone, coneDimension, coneDimension, coneDimension)
+
         # Puts the nose (cone) at the final point of the line (cylinder)
         self.setObjectPosition(coneHandle, 0, 0, lineLength/2)
 
         # Merges both shapes in a single arrow
-        arrowHandle = self.sim.groupShapes([lineHandle, coneHandle], False)
+        arrowHandle = self.sim.groupShapes([coneHandle, lineHandle], False)
+        self.client.step()  # triggers next simulation step
 
         return arrowHandle
+    
+    """
+    @dev: This function creates a line with little arrows through it
+          Coppelia does not have such figure as a primitive
+          For that, we merge a long thin cylinder with many small cones
+    @param: radius: double with the thickness of the line
+            length: double with the length of the line
+    @retruns: long with the handle of the newly generated line with arrows
+    @author: Andres Masis
+    """
+    def createLineWithCones(self, radius, length):
+        # Creates the line
+        # make sure to put the radius at first and length at last to make sure it is thin and long
+        lineHandle = self.createPrimitiveShape(self.sim.primitiveshape_cylinder, radius, radius, length)
+
+        # We align the line so it matches the arrows
+        self.setObjectPosition(lineHandle, 0, 0, length/2)
+
+        # We store in a list all the shapes tha we generate, to later merge them
+        shapesList = []
+
+        # Calculates the dimension of the arrows (cones) and the distance between each of them
+        coneDimension = radius*5
+        conesGap = coneDimension*4
+        
+        # Starts adding arrows (cones) and stops when it gets out of the length of the line (z size of the cylinder)
+        conePositionZ = 0
+        while conePositionZ < length:
+            # We create a new small arrow (cone)
+            coneHandle = self.createPrimitiveShape(self.sim.primitiveshape_cone, coneDimension, coneDimension, coneDimension)
+
+            # Puts the arrow (cone) at a  given vertical point of the line (cylinder)
+            self.setObjectPosition(coneHandle, 0, 0, conePositionZ)
+
+            # We add the new cone to the list to later merge everything
+            shapesList.append(coneHandle)
+
+            # Moves to an upper Z position
+            conePositionZ += conesGap
+
+        # It is convinient to add the line at the very end
+        # so the merge takes the as center the one of the line and not the one of a cone
+        shapesList.append(lineHandle)
+
+        # Merges both shapes in a single arrow
+        newLineHandle = self.sim.groupShapes(shapesList, False)
+        self.client.step()  # triggers next simulation step
+
+        # The new figure is finished, we can return its handle
+        return newLineHandle
+    
+    '''
+    @dev: This function loads a model (.ttm file)
+    @param: filepath: string with the absolute path of the file       
+    @returns: void
+    @author: Andres Masis
+    '''
+    def loadModel(self, filepath):
+        objectHandle = self.sim.loadModel(filepath)
+        self.client.step()  # triggers next simulation step
+        
+        return objectHandle
     
     """
     @dev: This function imports a mesh (.obj model) into the CoppeliaSim scene
@@ -243,7 +294,12 @@ class CoppeliaManager:
     def importShape(self, pathAndFilename, scalingFactor):
         # This 32 is necessary to align the objects bounding box
         shapeHandle = self.sim.importShape(0, pathAndFilename, 32, 0, scalingFactor)
+        self.client.step()  # triggers next simulation step
+
         return shapeHandle
+    
+    def createPolygone(self):
+        pass
 
     '''
     @dev: This function stops the CoppeliaSim simulation
