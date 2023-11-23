@@ -1,6 +1,8 @@
 import euclidViewerCoppelia
 import time
+import objFileManager
 
+"""
 location = (0, 0, 0.5)
 color = (0, 0, 0)
 
@@ -13,3 +15,7 @@ time.sleep(6)
 print(manager.removeNode(x))
 time.sleep(6)
 manager.stopSimulation()
+"""
+corners = [(-1,-1,0),(1,-1,0),(1,1,0),(-1,1,0)]
+fileManager = objFileManager.ObjFileManager()
+fileManager.createObjFile(corners)

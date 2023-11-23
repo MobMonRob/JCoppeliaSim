@@ -216,7 +216,6 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     """
     def addRobot(self):
         # Hardcoded location of the robot file
-        #ur5Path = "C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\models\\robots\\non-mobile\\UR5.ttm"
         ur5Path = "C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\UR5.ttm"
 
         # Load the model in the scene
@@ -233,7 +232,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     @author: Andres Masis
     """
     def moveRobot(self, handle, angles):
-        pass
+        self.setObjectOrientation(handle, angles.alpha, angles.beta, angles.gamma)
 
     """
     @dev: This function removes and object in the CoppeliaSim scene
@@ -245,7 +244,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
         try:
             self.sim.removeModel(handle)
             self.client.step()  # triggers next simulation step
-            
+
             return True
         except Exception as e:
             return False
