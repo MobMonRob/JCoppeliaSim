@@ -298,8 +298,19 @@ class CoppeliaManager:
 
         return shapeHandle
     
-    def createPolygone(self):
-        pass
+    def createPolygoneWithNormal(self, polygoneHandle):
+        # Creates the arrow that represents the normal
+        normalArrowHandle = self.createArrow(0.01)
+
+        # Lifts the arrow a little bit so it matches the polygone correctly
+        self.setObjectPosition(normalArrowHandle, 0, 0, 0.25)
+
+
+        # Merges both shapes in a single arrow
+        newPolygoneHandle = self.sim.groupShapes([polygoneHandle, normalArrowHandle], False)
+        self.client.step()  # triggers next simulation step
+        
+        return newPolygoneHandle
 
     '''
     @dev: This function stops the CoppeliaSim simulation

@@ -1,8 +1,18 @@
 
 import coppeliaManager
 import mathAuxiliar
+import objFileManager 
 
-class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAuxiliar):
+
+class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
+
+    def __init__(self):
+        # Creates an object to get methods calculateLengthLine() or calculateCenter()
+        self.mathAuxiliar = mathAuxiliar.MathAuxiliar()
+        # Creates an object to get the methods to create an .obj file
+        self.objFileManager = objFileManager.ObjFileManager()
+        # Calls the constructor of the superclass to get all the CoppeliaSim methods
+        super().__init__()
 
     """
     @dev: This function opens the CoppeliaSim scene
@@ -77,8 +87,8 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     @author: Andres Masis
     """
     def addLine(self, p1, p2, color, radius, label, addCones):
-        # Calculates the lenght of the line
-        length = self.calculateLengthLine(p1, p2)
+        # Calculates the lenght of the line with a method of MathAuxiliar
+        length = self.mathAuxiliar.calculateLengthLine(p1, p2)
 
         # Creates the line     
         if addCones:
@@ -94,12 +104,13 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
         
         # Some code for the euler angles
 
-        # Calculates the location of the line
-        location = self.calculateCenter(p1, p2)
+        # Calculates the location of the line with a method of MathAuxiliar
+        location = self.mathAuxiliar.calculateCenter(p1, p2)
 
         # Sets the general properties of the object: location, color and label
         self.setObjectProperties(location, color, label, lineHandle)
 
+        # The line is ready, now it can be returned
         return lineHandle
 
     """
@@ -175,8 +186,22 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager, mathAuxiliar.MathAux
     @returns: long with the handle of the generated polygone 
     @author: Andres Masis
     """
-    def addPolygone(self, location, corners, color, label, showNormal, tranparency):
-        pass
+    def addPolygone(self, location, corners, color, label, showNormal, transparency):
+        filePath = self.objFileManager.createObjFile(corners)
+        polygoneHandle = self.importShape(filePath,  1)
+
+        # Checks if a normal arrow has to be added to the polygone
+        if showNormal:
+            polygoneHandle = self.createPolygoneWithNormal(polygoneHandle)
+
+        # Checks if has to make the sphere transparent
+        if transparency:
+            self.makeObjectTransparent(polygoneHandle)  
+
+        # Sets the polygone´s general properties like its location, color and label
+        self.setObjectProperties(location, color, label, polygoneHandle)
+                            
+        
     
     """
     @dev: This function adds a cube to the CoppeliaSim scene
