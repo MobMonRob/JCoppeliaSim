@@ -1,11 +1,16 @@
 """
 This  class deals directly with CoppeliaSim
 It relies on the RemoteAPIClient provided by CoppeliaSim
-This creates an object with all the functions of the reuglar API
-
+This creates a sim object with all the functions of the regular API
+Left Menu->Writing code->CoppeliaSim API framework->Regular API reference
+https://www.coppeliarobotics.com/helpFiles/index.html  
+This class starts and stops the simulation
+It also controls the simulation with all the methods of the RegularAPI
+This class serves as superclass of EuclidViewerCoppelia
+So then the other class can inherit all the CoppeliaSim methods
+CoppeliaSim has something called stepping mode (see more in the read me of this repository)
+This class deals with the stepping mode
 """
-
-
 
 from coppeliasim_zmqremoteapi_client import RemoteAPIClient
 

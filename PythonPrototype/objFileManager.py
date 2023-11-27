@@ -1,5 +1,14 @@
+"""
+This class deals with the .obj files
+.obj files can be imported into CoppeliaSim as scene objects
+You can also write into a .obj file to set its properties
+This class creates and edits a .obj file to generate an usable 
+CoppeliaSim object
+"""
+
 class ObjFileManager:
     def __init__(self):
+        # This varaible avoids repeating names
         self.fileCounter = 0
 
     """

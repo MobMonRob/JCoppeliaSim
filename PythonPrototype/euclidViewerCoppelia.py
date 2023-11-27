@@ -2,6 +2,20 @@ import coppeliaManager
 import mathAuxiliar
 import objFileManager 
 
+"""
+This  class implements the interface iEuclidViewer3D
+This class inherits from EuclidViewerCoppelia
+So it can access all the CoppeliaSim methods
+The super class deals with the stepping mode and with other CoppeliaSim details
+So this class only has to call the methods of its superclass
+This class just implements the methods of the interface
+And sends parameters to its superclass methods
+And then return those values
+Sometimes, it needs help to know the value of the parameters it should send to the superclass
+For this it imports some other classes made in this project
+mathAuxiliary provides methods to calculate distances, positions and orientations
+objFileManager provides the method to create an .obj file for the polyognes
+"""
 
 class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
 

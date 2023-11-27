@@ -1,3 +1,9 @@
+"""
+This class provided methids to calculate certain mathematical operations
+This class contains a method to calculate the distance between 2 points
+It also contains a method to calculate the middle point between 2 3D points
+It also deals with the Euler angles
+"""
 import math
 
 class MathAuxiliar:
