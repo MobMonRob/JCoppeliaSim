@@ -16,5 +16,5 @@ print(manager.removeNode(x))
 time.sleep(6)
 manager.stopSimulation()
 """
-corners = [(-1,-1,0),(1,-1,0),(1,1,0),(-1,1,0)]
+corners = [(0.2,-0.5,0),(0.5,-0.2,0),(0.5,0.2,0),(0.2,0.5,0),(-0.2,0.5,0),(-0.5,0.2,0),(-0.5,-0.2,0),(-0.2,-0.5,0)]
 manager.addPolygone(location, corners, color, "My Test", True, True)

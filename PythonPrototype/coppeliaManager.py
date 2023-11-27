@@ -1,3 +1,12 @@
+"""
+This  class deals directly with CoppeliaSim
+It relies on the RemoteAPIClient provided by CoppeliaSim
+This creates an object with all the functions of the reuglar API
+
+"""
+
+
+
 from coppeliasim_zmqremoteapi_client import RemoteAPIClient
 
 class CoppeliaManager:
@@ -298,6 +307,18 @@ class CoppeliaManager:
 
         return shapeHandle
     
+    """
+    @dev: This function receives a polygone and merges an arrow to it
+          This function assumes that the polygone is just in a 2D x y axis
+          Also assumes that the polygone is centered in 0,0,0
+          This is important because the arrow is generated in the point 0,0,0
+          Also is created completely vertical
+          So if the the polygone is not completely flat to the floor or not in 0,0,0
+          The arrow will mismatch the polygone
+    @param: handle: long with the numeric handle of the polygone
+    @returns: long with the numeric handle of the new merged object
+    @author: Andres Masis
+    """
     def createPolygoneWithNormal(self, polygoneHandle):
         # Creates the arrow that represents the normal
         normalArrowHandle = self.createArrow(0.01)
@@ -305,11 +326,11 @@ class CoppeliaManager:
         # Lifts the arrow a little bit so it matches the polygone correctly
         self.setObjectPosition(normalArrowHandle, 0, 0, 0.25)
 
-
         # Merges both shapes in a single arrow
         newPolygoneHandle = self.sim.groupShapes([polygoneHandle, normalArrowHandle], False)
         self.client.step()  # triggers next simulation step
         
+        # The polygone has been succesfully merged with the normal arrow, so we can return its handle
         return newPolygoneHandle
 
     '''

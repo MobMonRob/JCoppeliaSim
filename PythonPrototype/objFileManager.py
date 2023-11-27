@@ -58,4 +58,5 @@ class ObjFileManager:
         # Updates the counter to avoid repeated names
         self.fileCounter += 1
 
+        # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
         return fullPath

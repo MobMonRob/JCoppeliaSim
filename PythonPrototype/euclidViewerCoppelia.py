@@ -1,4 +1,3 @@
-
 import coppeliaManager
 import mathAuxiliar
 import objFileManager 
@@ -176,7 +175,12 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
 
     """
     @dev: Adds a polygone (any proportions and amount of sides) to the CoppeliaSim scene
-          There is not native way to create polygons in CoppeliaSim. (Connect lines between all the point?)
+          There is not native way to create polygons in CoppeliaSim
+          It generates a .obj file and then loads it to the CoppeliaSim scene
+          Then it treats it as any other object with its handle
+          MISSING EULER ANGLES AND 
+          CHECK THE NORMAL IF THE POLYGONE IS NOT PARALLEL TO THE GROUND
+          AND CENTERED IN 0,0,0
     @param: location: Point3d with the x, y, z location of the center of the figure
             corners: Point3d[] array of all the 3d points of the corners of the figure
             color: Color with the r, g, b values of the polygone
@@ -187,22 +191,30 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
     @author: Andres Masis
     """
     def addPolygone(self, location, corners, color, label, showNormal, transparency):
+        # Creates a .obj file with the polygone given its corners
         filePath = self.objFileManager.createObjFile(corners)
+
+        # Loads the generated .obj file into the CoppeliaSim scene
         polygoneHandle = self.importShape(filePath,  1)
 
         # Checks if a normal arrow has to be added to the polygone
         if showNormal:
+            # For this is assumed that the polygone at this point is centered in 0,0,0
+            # It is also assumed that the polygone is parallel to the floor
             polygoneHandle = self.createPolygoneWithNormal(polygoneHandle)
 
-        # Checks if has to make the sphere transparent
+        # Checks if has to make the polygone transparent
         if transparency:
             self.makeObjectTransparent(polygoneHandle)  
 
+        # CODE TO MANAGE THE EULER ANGLES OF THE POLYGONE
+
         # Sets the polygone´s general properties like its location, color and label
         self.setObjectProperties(location, color, label, polygoneHandle)
+
+        # The polygone is ready so we can return its handle
+        return polygoneHandle
                             
-        
-    
     """
     @dev: This function adds a cube to the CoppeliaSim scene
           The cuboid is a native Coppelia figure, so just add a regular cuboid
