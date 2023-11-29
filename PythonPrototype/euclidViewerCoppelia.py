@@ -206,7 +206,7 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
     """
     def addPolygone(self, location, corners, color, label, showNormal, transparency):
         # Creates a .obj file with the polygone given its corners
-        filePath = self.objFileManager.createObjFile(corners)
+        filePath = self.objFileManager.createPolygoneFile(corners)
 
         # Loads the generated .obj file into the CoppeliaSim scene
         polygoneHandle = self.importShape(filePath,  1)

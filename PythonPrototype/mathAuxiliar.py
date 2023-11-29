@@ -44,3 +44,20 @@ class MathAuxiliar:
 
         return x, y, z
     
+    def calculateCirclePoints(self, angle):
+        # Radius of the circle
+        radius = 0.1
+
+        # Number of points
+        num_points = 360
+
+        # Generate x, y coordinates for the circle points
+        circle_points = [(radius * math.cos(2 * math.pi * i / num_points), radius * math.sin(2 * math.pi * i / num_points), 0) for i in range(angle)]
+
+        # We insert at the beginning of the list the center of the circle.
+        circle_points.insert(0, (0,0,0))
+
+        # The circle coordinates are ready, we can return the list
+        return circle_points
+
+        
