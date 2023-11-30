@@ -5,11 +5,14 @@ You can also write into a .obj file to set its properties
 This class creates and edits a .obj file to generate an usable 
 CoppeliaSim object
 """
+import mathAuxiliar
 
 class ObjFileManager:
     def __init__(self):
         # This varaible avoids repeating names
         self.fileCounter = 0
+
+        self.mathAuxiliar = mathAuxiliar.MathAuxiliar()
 
     """
     @dev: This functions writes the instructions to set all the vertexes (v  x y z) 
@@ -110,7 +113,7 @@ class ObjFileManager:
         # Open the file in write mode, so it creates the file too
         f = open(fullPath, "w")
 
-
+        # Deals with the .obj intructions
         self.editObjFile(corners, f)
 
         # close the file
@@ -118,6 +121,26 @@ class ObjFileManager:
 
         # Updates the counter to avoid repeated names
         self.fileCounter += 1
+
+        # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
+        return fullPath
+    
+    def createAngleCircle(self, angle):
+        # We build the path of the file
+        filePath = "C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\angles\\"
+        fileName = "angle" + str(angle) + "Degrees.obj"  # fileCounter to create new names
+        fullPath = filePath + fileName
+
+        # Open the file in write mode, so it creates the file too
+        f = open(fullPath, "w")
+
+        corners = self.mathAuxiliar.calculateCirclePoints(angle)
+
+        # Deals with the .obj intructions
+        self.editObjFile(corners, f)
+
+        # close the file
+        f.close() 
 
         # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
         return fullPath

@@ -228,6 +228,25 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
 
         # The polygone is ready so we can return its handle
         return polygoneHandle
+    
+    def addAngle(self, angle, location, color):
+           # Creates a .obj file with the polygone given its corners
+        filePath = self.objFileManager.createAngleCircle(angle)
+
+        # Loads the generated .obj file into the CoppeliaSim scene
+        angleHandle = self.importShape(filePath,  1)
+
+
+        # CODE TO MANAGE THE EULER ANGLES OF THE POLYGONE
+
+        label = str(angle)+"Degrees"
+
+        # Sets the polygone´s general properties like its location, color and label
+        self.setObjectProperties(location, color, label, angleHandle)
+
+        # The polygone is ready so we can return its handle
+        return angleHandle
+        pass
                             
     """
     @dev: This function adds a cube to the CoppeliaSim scene

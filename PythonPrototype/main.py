@@ -32,4 +32,4 @@ corners = [(-1.5,0,0),(0,0.5,0),(0.5,0,0), (0,-0.5,0)]
 
 color = (0,255,0)
 
-manager.addPolygone(location, corners, color, "My polygone", True, True)
+manager.addAngle(196, location, color)
