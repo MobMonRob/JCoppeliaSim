@@ -229,9 +229,22 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
         # The polygone is ready so we can return its handle
         return polygoneHandle
     
-    def addAngle(self, angle, location, color):
-           # Creates a .obj file with the polygone given its corners
-        filePath = self.objFileManager.createAngleCircle(angle)
+    """
+    @dev: This function adds into the simulation a partial 2D circle representing an angle
+          First it generates an .obj file with the partial circle given its angle
+          Then it loads the generated shape into the CoppeliaSim scene
+          Next, it sets the properties of the shape, like its orientation, label, color, etc
+          iNCOMPLETE, MISSING THE CODE FOR THE EULER ANGLES
+    @param: angle: integer between 0 and 360, with the angle to generate
+            location: Point3d with the x, y, z location of the center of the figure
+            color: Color with the r, g, b values of the polygone
+            MAYBE A PARAMETER FOR THE ORIENTATION WILL BE ADDED
+    @returns: long with the handle of the generated cube
+    @author: Andres Masis
+    """
+    def addFlatAngle(self, angle, location, color):
+        # Creates a .obj file with the polygone given its corners
+        filePath = self.objFileManager.createAngleFlatCircle(angle)
 
         # Loads the generated .obj file into the CoppeliaSim scene
         angleHandle = self.importShape(filePath,  1)
@@ -246,7 +259,6 @@ class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
 
         # The polygone is ready so we can return its handle
         return angleHandle
-        pass
                             
     """
     @dev: This function adds a cube to the CoppeliaSim scene

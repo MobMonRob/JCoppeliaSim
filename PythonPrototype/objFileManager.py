@@ -125,10 +125,10 @@ class ObjFileManager:
         # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
         return fullPath
     
-    def createAngleCircle(self, angle):
+    def createAngleFlatCircle(self, angle):
         # We build the path of the file
         filePath = "C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\angles\\"
-        fileName = "angle" + str(angle) + "Degrees.obj"  # fileCounter to create new names
+        fileName = "flatAngle" + str(angle) + "Degrees.obj"  # fileCounter to create new names
         fullPath = filePath + fileName
 
         # Open the file in write mode, so it creates the file too
