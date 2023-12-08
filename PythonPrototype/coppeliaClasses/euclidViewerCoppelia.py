@@ -1,6 +1,6 @@
-import coppeliaManager
-import mathAuxiliar
-import objFileManager 
+import coppeliaClasses.coppeliaManager
+import mathClasses.mathAuxiliar
+import objManagers.objFileManager 
 
 """
 This  class implements the interface iEuclidViewer3D
@@ -17,13 +17,13 @@ mathAuxiliary provides methods to calculate distances, positions and orientation
 objFileManager provides the method to create an .obj file for the polyognes
 """
 
-class EuclidViewerCoppelia(coppeliaManager.CoppeliaManager):
+class EuclidViewerCoppelia(coppeliaClasses.coppeliaManager.CoppeliaManager):
 
     def __init__(self):
         # Creates an object to get methods calculateLengthLine() or calculateCenter()
-        self.mathAuxiliar = mathAuxiliar.MathAuxiliar()
+        self.mathAuxiliar = mathClasses.mathAuxiliar.MathAuxiliar()
         # Creates an object to get the methods to create an .obj file
-        self.objFileManager = objFileManager.ObjFileManager()
+        self.objFileManager = objManagers.objFileManager.ObjFileManager()
         # Calls the constructor of the superclass to get all the CoppeliaSim methods
         super().__init__()
 

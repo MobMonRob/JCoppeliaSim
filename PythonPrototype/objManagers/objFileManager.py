@@ -4,14 +4,14 @@ This class deals with the .obj files
 You can also write into a .obj file to set its properties
 This class creates and edits a .obj file to generate an usable CoppeliaSim object
 """
-import mathAuxiliar
+import mathClasses.mathAuxiliar
 
 class ObjFileManager:
     def __init__(self):
         # This varaible avoids repeating names
         self.fileCounter = 0
 
-        self.mathAuxiliar = mathAuxiliar.MathAuxiliar()
+        self.mathAuxiliar = mathClasses.mathAuxiliar.MathAuxiliar()
 
     """
     @dev: This functions writes the instructions to set all the vertexes (v  x y z) 
@@ -147,18 +147,22 @@ class ObjFileManager:
         # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
         return fullPath
 
-        def createAngle3DLine(self, angle):
+    def createAngle3DLine(self, angle):
         # We build the path of the file
         filePath = "C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\angles\\"
         fileName = "3dAngle" + str(angle) + "Degrees.obj"  # fileCounter to create new names
         fullPath = filePath + fileName
 
-        # Calls the auxiliary function of the MathAuxliar class to calculate the coordinates of the circle´s corners
-        radius = 0.1
-        corners = self.mathAuxiliar.calculateCirclePoints(angle, radius)
+        # Calls the auxiliary function of the MathAuxliar class to calculate the coordinates of the INNER circle´s corners
+        radius = 0.0095
+        innerCircleDown = self.mathAuxiliar.calculateCirclePoints(angle, radius)
 
-        # Deals with the .obj intructions
-        self.editFlatObjFile(corners, fullPath)
+        innerCircleUp = [t[:-1] + (0.01,) for t in innerCircleDown]
+
+        innerCircleComplete = [None] * (len(innerCircleDown) + len(innerCircleUp)) # create a list of the correct length
+        innerCircleComplete[::2] = innerCircleDown # assign the elements of list1 to the even indices
+        innerCircleComplete[1::2] = innerCircleUp # assign the elements of list2 to the odd indices
+
 
         # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
         return fullPath
