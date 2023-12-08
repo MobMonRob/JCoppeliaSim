@@ -49,13 +49,11 @@ class MathAuxiliar:
           This function calculates the points of the corners
           of a "circle" of 360 sides 
     @param: angle: integer with the angle to generate
+            radius: double with the radius of the circle
     @returns: list of n arrays of doubles with the (x,y,z) coordinates of the  circle 
     @author: Andres Masis
     """
-    def calculateCirclePoints(self, angle):
-        # Radius of the circle
-        radius = 1
-
+    def calculateCirclePoints(self, angle, radius):
         # Number of points
         num_points = 360
 

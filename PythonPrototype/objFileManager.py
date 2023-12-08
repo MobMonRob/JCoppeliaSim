@@ -2,8 +2,7 @@
 This class deals with the .obj files
 .obj files can be imported into CoppeliaSim as scene objects
 You can also write into a .obj file to set its properties
-This class creates and edits a .obj file to generate an usable 
-CoppeliaSim object
+This class creates and edits a .obj file to generate an usable CoppeliaSim object
 """
 import mathAuxiliar
 
@@ -80,11 +79,14 @@ class ObjFileManager:
                 f 1//1 2//1 3//1 
                 f 1//1 3//1 4//1 
     @param: corners: Point3d[] array of all the 3d points of the corners of the figure
-            f: fileManager object to access the specific .obj file
+            fullPath: string with the absolute path of the .obj to use
     @returns: None
     @author: Andres Masis
     """
-    def editObjFile(self, corners, f):
+    def editFlatObjFile(self, corners, fullPath):
+        # Open the file in write mode, so it creates the file too
+        f = open(fullPath, "w")
+
         # Writes the vertexes: v  x y z
         self.writeVertexes(corners, f)
         # Writes the texture line: usemtl $Material_0
@@ -92,6 +94,9 @@ class ObjFileManager:
         # Writes the lines that connect the vertexes:
         limit = len(corners) 
         self.fillObject(limit, f)
+
+        # close the file
+        f.close() 
 
     """
     @dev: This functions creates an obj file in the polygones folder
@@ -110,14 +115,8 @@ class ObjFileManager:
         fileName = "polygone" + str(self.fileCounter) + ".obj"  # fileCounter to create new names
         fullPath = filePath + fileName
 
-        # Open the file in write mode, so it creates the file too
-        f = open(fullPath, "w")
-
         # Deals with the .obj intructions
-        self.editObjFile(corners, f)
-
-        # close the file
-        f.close() 
+        self.editFlatObjFile(corners, fullPath)
 
         # Updates the counter to avoid repeated names
         self.fileCounter += 1
@@ -125,22 +124,42 @@ class ObjFileManager:
         # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
         return fullPath
     
+    """
+    @dev: This function creates a .obj file of a flat partial circle of n degrees
+          It first creates an empty .obj file in the angles folder
+          Then it uses an auxliary function to calculate the coordinates of the circle
+          Then it writes all that information into the .obj file with the help of the editFile() function of this class
+          Then it closes the file and finally it returns its full path
+    """
     def createAngleFlatCircle(self, angle):
         # We build the path of the file
         filePath = "C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\angles\\"
         fileName = "flatAngle" + str(angle) + "Degrees.obj"  # fileCounter to create new names
         fullPath = filePath + fileName
 
-        # Open the file in write mode, so it creates the file too
-        f = open(fullPath, "w")
-
-        corners = self.mathAuxiliar.calculateCirclePoints(angle)
+        # Calls the auxiliary function of the MathAuxliar class to calculate the coordinates of the circle´s corners
+        radius = 0.1
+        corners = self.mathAuxiliar.calculateCirclePoints(angle, radius)
 
         # Deals with the .obj intructions
-        self.editObjFile(corners, f)
-
-        # close the file
-        f.close() 
+        self.editFlatObjFile(corners, fullPath)
 
         # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
         return fullPath
+
+        def createAngle3DLine(self, angle):
+        # We build the path of the file
+        filePath = "C:\\Users\\rahm-\\Documents\\coppeliaPythonZMQ\\JCoppeliaSim\\PythonPrototype\\models\\angles\\"
+        fileName = "3dAngle" + str(angle) + "Degrees.obj"  # fileCounter to create new names
+        fullPath = filePath + fileName
+
+        # Calls the auxiliary function of the MathAuxliar class to calculate the coordinates of the circle´s corners
+        radius = 0.1
+        corners = self.mathAuxiliar.calculateCirclePoints(angle, radius)
+
+        # Deals with the .obj intructions
+        self.editFlatObjFile(corners, fullPath)
+
+        # The .obj file is ready, returns the path were it is located so then CoppeliaSim can load it
+        return fullPath
+
