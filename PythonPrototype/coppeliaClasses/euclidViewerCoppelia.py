@@ -15,6 +15,8 @@ Sometimes, it needs help to know the value of the parameters it should send to t
 For this it imports some other classes made in this project
 mathAuxiliary provides methods to calculate distances, positions and orientations
 objFileManager provides the method to create an .obj file for the polyognes
+Since it is only for testing, this code has absolute file paths
+Be careful with that when running this project in another folder or computer
 """
 
 class EuclidViewerCoppelia(coppeliaClasses.coppeliaManager.CoppeliaManager):

@@ -1,6 +1,11 @@
 import objManagers.objFileManager
 import mathClasses.mathAuxiliar
 
+"""
+FOR TESTING PURPOSES, THIS CLASS SAVES ITS FILES IN AN ABSOLUTE PATH
+BE CAREFUL IF YOU WANT TO HAVE THE FILES IN ANOTHER LOCATION OR RUNNING IN ANOTHER COMPUTER
+"""
+
 class Obj3dFileManager(objManagers.objFileManager.ObjFileManager):
 
     def __init__(self):

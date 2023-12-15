@@ -9,6 +9,7 @@ IMPORTANT: THIS CODE HAS NOT BEEN TESTED
 Take this just as a prototype
 """
 import xml.sax
+import coppeliaClasses.euclidViewerCoppelia
 
 class PlannerCommandHandler(xml.sax.ContentHandler):
     
@@ -21,6 +22,7 @@ class PlannerCommandHandler(xml.sax.ContentHandler):
         # Current element is very important because determines the what is being read in that moment
         self.current_element = ""
         self.path_data = {}
+        self.euclidViewerCoppelia = coppeliaClasses.euclidViewerCoppelia.EuclidViewerCoppelia()
 
     """
     @dev: This function is excecuted when a new element (tag) is read in the XML file
@@ -88,9 +90,29 @@ class PlannerCommandHandler(xml.sax.ContentHandler):
             
             self.path_data["points"].append({"poseOpt": pose_opt, "pathParameterOpt": path_parameter_opt})
 
+            # Generates the given Coppelia visualization
+            location = (float(pose_data[0]), float(pose_data[1]), float(pose_data[2]))
+            radius = 0.05
+            color = (255, 0, 0)
+            label = "point"
+            transparency = False
+            # For this specific case, the orientation is not important, because we are adding a sphere
+            self.euclidViewerCoppelia.addSphere(location, radius, color, label, transparency)
+
+
+ 
+
 # Create a SAX parser and parse the XML file
 xml_file_path = "your_xml_file.xml"  # Replace with the actual path to your XML file
 parser = xml.sax.make_parser()
 handler = PlannerCommandHandler()
 parser.setContentHandler(handler)
 parser.parse(xml_file_path)
+
+def parse_collision_objects(self, xml_path, myHandler):
+    handler = myHandler
+    parser = xml.sax.make_parser()
+    parser.setContentHandler(handler)
+    parser.parse(open(xml_path))
+
+    return handler.collisionObjects

@@ -3,6 +3,8 @@ This class deals with the .obj files
 .obj files can be imported into CoppeliaSim as scene objects
 You can also write into a .obj file to set its properties
 This class creates and edits a .obj file to generate an usable CoppeliaSim object
+FOR TESTING PURPOSES, THIS CLASS SAVES ITS FILES IN AN ABSOLUTE PATH
+BE CAREFUL IF YOU WANT TO HAVE THE FILES IN ANOTHER LOCATION OR RUNNING IN ANOTHER COMPUTER
 """
 import mathClasses.mathAuxiliar
 
